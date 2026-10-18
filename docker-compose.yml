@@ -3,6 +3,7 @@ services:
     build: .
     image: my-script
     container_name: my-script-compose
+    command: ["/usr/local/bin/script.sh"]
     environment:
       ITERATIONS: "3"
     volumes:
