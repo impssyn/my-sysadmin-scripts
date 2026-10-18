@@ -1,0 +1,10 @@
+services:
+  monitor:
+    build: .
+    image: my-script
+    container_name: my-script-compose
+    environment:
+      ITERATIONS: "3"
+    volumes:
+      - ./logs:/var/www
+      - /etc/localtime:/etc/localtime:ro
