@@ -1,0 +1,39 @@
+$ ITERATIONS=2 ./script.sh
+2026-10-18 21:40:23 snapshot -> monitor.log
+2026-10-18 21:40:33 snapshot -> monitor.log
+
+$ cat monitor.log
+--- 2026-10-18 21:40:23 ---
+               total        used        free      shared  buff/cache   available
+Mem:           3.7Gi       1.8Gi       188Mi       112Mi       2.2Gi       2.0Gi
+Swap:             0B          0B          0B
+Filesystem                   Size  Used Avail Use% Mounted on
+tmpfs                        763M  9.9M  753M   2% /run
+tmpfs                        5.0M     0  5.0M   0% /run/lock
+/dev/vda3                     59G   22G   35G  39% /
+tmpfs                        1.9G     0  1.9G   0% /dev/shm
+efivarfs                     256K   19K  233K   8% /sys/firmware/efi/efivars
+/dev/vda2                    100M  4.3M   96M   5% /boot/efi
+tmpfs                        382M   12K  382M   1% /run/user/0
+tmpfs                        382M   12K  382M   1% /run/user/1002
+/dev/md0                     463M   24K  427M   1% /mnt/raid
+/dev/mapper/vg_data-lv_logs  266M   24K  250M   1% /mnt/logs
+ 21:40:23 up 20 days,  9:29, 11 users,  load average: 0.08, 0.11, 0.14
+
+--- 2026-10-18 21:40:33 ---
+               total        used        free      shared  buff/cache   available
+Mem:           3.7Gi       1.8Gi       189Mi       112Mi       2.2Gi       2.0Gi
+Swap:             0B          0B          0B
+Filesystem                   Size  Used Avail Use% Mounted on
+tmpfs                        763M  9.9M  753M   2% /run
+tmpfs                        5.0M     0  5.0M   0% /run/lock
+/dev/vda3                     59G   22G   35G  39% /
+tmpfs                        1.9G     0  1.9G   0% /dev/shm
+efivarfs                     256K   19K  233K   8% /sys/firmware/efi/efivars
+/dev/vda2                    100M  4.3M   96M   5% /boot/efi
+tmpfs                        382M   12K  382M   1% /run/user/0
+tmpfs                        382M   12K  382M   1% /run/user/1002
+/dev/md0                     463M   24K  427M   1% /mnt/raid
+/dev/mapper/vg_data-lv_logs  266M   24K  250M   1% /mnt/logs
+ 21:40:33 up 20 days,  9:29, 11 users,  load average: 0.07, 0.10, 0.14
+
