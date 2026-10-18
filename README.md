@@ -1,34 +1,18 @@
 # my-sysadmin-scripts
 
-`script.sh` раз в 10 секунд дописывает в `monitor.log` снимок `free -h`, `df -h` и `uptime` с временной меткой (вариант Б — мониторинг ресурсов).
+script.sh раз в 10 секунд дописывает в monitor.log вывод free -h, df -h и uptime с временной меткой. Вариант Б, мониторинг ресурсов.
 
 ## Запуск
 
 ```bash
-./script.sh                          # бесконечно, Ctrl+C — остановка
-ITERATIONS=3 ./script.sh             # сделать 3 снимка и выйти
-LOG_FILE=/tmp/mon.log ./script.sh    # писать лог в другое место
+./script.sh                          # работает, пока не остановить Ctrl+C
+ITERATIONS=3 ./script.sh             # 3 снимка и выход
+LOG_FILE=/tmp/mon.log ./script.sh    # лог в другом месте
 ```
 
-## Формат лога
+Каждый снимок в логе начинается со строки с датой, например `--- 2026-10-18 21:12:10 ---`. Пример лежит в sample_output.txt.
 
-```
---- 2026-10-18 21:12:10 ---
-<вывод free -h>
-<вывод df -h>
-<вывод uptime>
-```
-
-Пример — в [`sample_output.txt`](sample_output.txt).
-
-## Обработка ошибок
-
-| Ситуация | Поведение | Код выхода |
-|---|---|---|
-| нет утилиты `free`/`df`/`uptime` | сообщение в stderr | 1 |
-| `ITERATIONS` не число | сообщение в stderr | 2 |
-| нет прав на запись лога | сообщение в stderr | 3 |
-| SIGINT / SIGTERM (`Ctrl+C`, `docker stop`, `systemctl stop`) | строка «остановлен» в логе, чистый выход | 0 |
+Если нет нужных утилит, ITERATIONS не число или нет прав на запись лога, скрипт пишет ошибку и выходит с кодом 1, 2 или 3. По Ctrl+C или SIGTERM записывает в лог строку об остановке и выходит с кодом 0.
 
 ## Docker
 
@@ -36,19 +20,16 @@ LOG_FILE=/tmp/mon.log ./script.sh    # писать лог в другое ме�
 docker build -t my-script .
 docker run -d -p 127.0.0.1:8080:8080 --name my-app my-script
 curl http://127.0.0.1:8080/monitor.log
-docker compose up        # 3 снимка, лог в ./logs
+docker compose up        # 3 снимка, лог сохраняется в ./logs
 ```
 
-## Деплой (nginx + TLS + systemd)
+В контейнере вместе со скриптом работает python http.server на порту 8080, он отдаёт monitor.log.
 
-| Файл | Куда |
-|---|---|
-| `deploy/nginx-my-app.conf` | `/etc/nginx/sites-available/my-app` |
-| `deploy/my-app.service` | `/etc/systemd/system/my-app.service` |
+## nginx, TLS и systemd
 
-- 80 → 301 на `https://<host>:8443`
-- 8443 (TLS, self-signed) → `proxy_pass http://127.0.0.1:8080`
-- 443 на хосте занят другим сервисом, поэтому HTTPS на 8443
+Конфиг nginx лежит в deploy/nginx-my-app.conf, его нужно скопировать в /etc/nginx/sites-available/my-app. Unit-файл deploy/my-app.service копируется в /etc/systemd/system/.
+
+С порта 80 идёт редирект на HTTPS. HTTPS работает на 8443, потому что 443 на сервере уже занят. Сертификат самоподписанный.
 
 ```bash
 curl -kI https://<host>:8443/
